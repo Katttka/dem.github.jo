@@ -1,1 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Моя презентация</title>
+    </head>
+  <body>
+    
+<p>
+  #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Криптоарифметический решатель головоломок
+Расшифровывает уравнения вида: СЛОВО + СЛОВО = СЛОВО
+"""
 
+from itertools import permutations
+import re
+from datetime import datetime
+
+
+class CryptoSolver:
+    """Класс для решения криптоарифметических уравнений"""
+    
+    def __init__(self):
+        self.total_equations = 0
+        self.solved_count = 0
+    
+    def word_to_number(self, word, mapping):
+        """Преобразует слово в число по карте соответствия"""
+        return int(''.join(str(mapping[char]) for char in word))
+    
+    def parse_equation(self, equation):
+        """Парсит уравнение и извлекает слагаемые и результат"""
+        parts = equation.split('=')
+        left_side = parts[0].strip()
+        right_side = parts[1].strip()
+        
+        addends = re.findall(r'[А-ЯЁ]+', left_side)
+        result = right_side.strip()
+        
+        return addends, result
+    
+    def solve_equation(self, equation):
+        """Решает одно криптоарифметическое уравнение"""
+        addends, result = self.parse_equation(equation)
+        
+        if not addends or not result:
+            return None
+        
+        # Собираем все уникальные буквы
+        all_letters = set()
+        for word in addends + [result]:
+            all_letters.update(word)
+        letters = list(all_letters)
+        
+        if len(letters) > 10:
+            return None
+        
+        # Первые буквы не могут быть 0
+        first_letters = set(word[0] for word in addends + [result])
+        
+        permutations_checked = 0
+        
+        for perm in permutations(range(10), len(letters)):
+            permutations_checked += 1
+            mapping = dict(zip(letters, perm))
+            
+            # Проверяем, что первые буквы не 0
+            if any(mapping[letter] == 0 for letter in first_letters):
+                continue
+            
+            # Вычисляем значения
+            addend_values = [self.word_to_number(word, mapping) for word in addends]
+            result_value = self.word_to_number(result, mapping)
+            
+            # Проверяем уравнение
+            if sum(addend_values) == result_value:
+                return {
+                    'mapping': mapping,
+                    'addends': addends,
+                    'addend_values': addend_values,
+                    'result': result,
+                    'result_value': result_value,
+                    'permutations': permutations_checked,
+                    'letters': letters
+                }
+        
+        return None
+    
+    def print_separator(self, char='=', length=60):
+        """Выводит разделительную линию"""
+        print(char * length)
+    
+    def print_equation_header(self, num, equation):
+        """Выводит заголовок уравнения"""
+        print()
+        self.print_separator('#')
+        print(f"# УРАВНЕНИЕ #{num}")
+        self.print_separator('#')
+        print()
+        self.print_separator('=')
+        print(f"Уравнение: {equation}")
+        print()
+    
+    def print_solution(self, solution, equation):
+        """Красиво выводит решение уравнения"""
+        if not solution:
+            print("❌ РЕШЕНИЕ НЕ НАЙДЕНО!")
+            return
+        
+        self.print_separator('=')
+        print(f"Буквы ({len(solution['letters'])}): {', '.join(sorted(solution['letters']))}")
+        self.print_separator('=')
+        print()
+        print(f"✅ РЕШЕНИЕ НАЙДЕНО! (проверено перестановок: {solution['permutations']:,})")
+        print()
+        print("📋 Соответствие букв и цифр:")
+        self.print_separator('-')
+        
+        for letter, digit in sorted(solution['mapping'].items(), key=lambda x: x[1]):
+            print(f"   {letter} = {digit}")
+        
+        print()
+        print("🔢 Проверка:")
+        self.print_separator('-')
+        
+        # Вычисляем максимальную ширину для выравнивания
+        all_values = solution['addend_values'] + [solution['result_value']]
+        max_width = max(len(str(v)) for v in all_values)
+        
+        # Выводим слагаемые
+        for i, val in enumerate(solution['addend_values']):
+            if i == 0:
+                print(f"    {val:>{max_width}}")
+            else:
+                print(f" +  {val:>{max_width}}")
+        
+        # Выводим разделительную линию
+        print(f"   {'-' * max_width}")
+        print(f"   {solution['result_value']:>{max_width}}")
+        print()
+        
+        # Выводим итоговую проверку
+        addends_str = ' + '.join(map(str, solution['addend_values']))
+        print(f"✓ {addends_str} = {solution['result_value']}")
+        print()
+    
+    def solve_all(self, equations):
+        """Решает все уравнения и выводит красивый отчёт"""
+        self.total_equations = len(equations)
+        self.solved_count = 0
+        
+        print()
+        self.print_separator('═', 60)
+        print("   🧩 КРИПТОАРИФМЕТИЧЕСКИЙ РЕШАТЕЛЬ ГОЛОВОЛОМОК 🧩")
+        self.print_separator('═', 60)
+        print(f"\n   Всего уравнений: {self.total_equations}")
+        print(f"   Дата решения: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
+        print()
+        
+        results = []
+        for i, equation in enumerate(equations, 1):
+            self.print_equation_header(i, equation)
+            solution = self.solve_equation(equation)
+            results.append(solution)
+            self.print_solution(solution, equation)
+            
+            if solution:
+                self.solved_count += 1
+        
+        # Итоговый отчёт
+        self.print_separator('═', 60)
+        print("   📊 ИТОГОВЫЙ ОТЧЁТ")
+        self.print_separator('═', 60)
+        print()
+        print(f"   ✅ Решено уравнений: {self.solved_count} из {self.total_equations}")
+        print(f"   📈 Процент успеха: {(self.solved_count/self.total_equations)*100:.1f}%")
+        print()
+        
+        if self.solved_count == self.total_equations:
+            print("   🎉 ПОЗДРАВЛЯЕМ! Все головоломки успешно расшифрованы!")
+        else:
+            print("   ⚠️ Некоторые уравнения не имеют решения")
+        print()
+        self.print_separator('═', 60)
+        print()
+        
+        return results
+
+
+def main():
+    """Основная функция программы"""
+    solver = CryptoSolver()
+    
+    # Все уравнения для решения
+    equations = [
+        "ВОЛК + ЛИСА = ЗВЕРИ",
+        "КТО + КОТ = ТОК",
+        "КОШКА + КОШКА + КОШКА = СОБАКА",
+        "СИНУС + СИНУС + КОСИНУС = ТАНГЕНС"
+    ]
+    
+    solver.solve_all(equations)
+
+
+if __name__ == "__main__":
+    main()
+</p>
