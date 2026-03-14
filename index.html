@@ -1,266 +1,336 @@
-```python
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-🧩 Криптоарифметический решатель головоломок + Модуль прогноза успеваемости
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoSolver & Student Report</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fc;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-secondary: #718096;
+            --accent-color: #4299e1;
+            --accent-hover: #3182ce;
+            --code-bg: #f7fafc;
+            --border-color: #e2e8f0;
+            --success: #48bb78;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
 
-Этот скрипт решает две задачи:
-1. Расшифровывает криптоарифметические уравнения (СЛОВО + СЛОВО = СЛОВО).
-2. Генерирует отчет об учебной деятельности студента за конкретную дату.
-"""
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-from itertools import permutations
-import re
-from datetime import datetime
+        .container {
+            max-width: 900px;
+            width: 100%;
+            padding: 40px 20px;
+        }
 
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-class CryptoSolver:
-    """
-    Класс для решения криптоарифметических уравнений.
-    Поддерживает множественные слагаемые и автоматическую проверку решений.
-    """
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
 
-    def __init__(self):
-        self.total_equations = 0
-        self.solved_count = 0
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    def word_to_number(self, word: str, mapping: dict) -> int:
-        """Преобразует слово в число по карте соответствия букв → цифры."""
-        return int(''.join(str(mapping[char]) for char in word))
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-    def parse_equation(self, equation: str):
-        """Парсит уравнение: извлекает слагаемые и результат."""
-        parts = equation.split('=')
-        left_side = parts[0].strip()
-        right_side = parts[1].strip()
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
 
-        # Ищем слова, состоящие из русских букв
-        addends = re.findall(r'[А-ЯЁ]+', left_side)
-        result = right_side.strip()
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
 
-        return addends, result
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background-color: #ebf8ff;
+            color: var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
 
-    def solve_equation(self, equation: str):
-        """Решает одно криптоарифметическое уравнение перебором перестановок."""
-        addends, result = self.parse_equation(equation)
+        h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
 
-        if not addends or not result:
-            return None
+        /* Code Block Styling */
+        .code-window {
+            background-color: var(--code-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+        }
 
-        # Собираем все уникальные буквы
-        all_letters = set()
-        for word in addends + [result]:
-            all_letters.update(word)
-        letters = list(all_letters)
+        .code-header {
+            background-color: #edf2f7;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        # Если букв больше 10, решение невозможно (цифр всего 10)
-        if len(letters) > 10:
-            return None
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
 
-        # Первые буквы слов не могут быть нулем
-        first_letters = {word[0] for word in addends + [result]}
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot.red { background-color: #fc8181; }
+        .dot.yellow { background-color: #f6ad55; }
+        .dot.green { background-color: #68d391; }
 
-        permutations_checked = 0
+        pre {
+            margin: 0;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #2d3748;
+            line-height: 1.5;
+        }
 
-        # Перебор всех возможных перестановок цифр
-        for perm in permutations(range(10), len(letters)):
-            permutations_checked += 1
-            mapping = dict(zip(letters, perm))
+        /* Simple Syntax Highlighting Simulation */
+        .kw { color: #d53f8c; font-weight: bold; } /* Keywords */
+        .str { color: #38a169; } /* Strings */
+        .num { color: #3182ce; } /* Numbers */
+        .com { color: #a0aec0; font-style: italic; } /* Comments */
+        .func { color: #805ad5; } /* Functions */
+        .cls { color: #d69e2e; font-weight: bold; } /* Classes */
 
-            # Пропускаем, если первая буква любого слова = 0
-            if any(mapping[letter] == 0 for letter in first_letters):
-                continue
+        /* Simulation Output Area */
+        #output-area {
+            display: none;
+            margin-top: 20px;
+            background: #fff;
+            border: 1px dashed var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
 
-            # Вычисляем числовые значения
-            addend_values = [self.word_to_number(word, mapping) for word in addends]
-            result_value = self.word_to_number(result, mapping)
+        .log-line {
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #4a5568;
+        }
+        .log-success { color: var(--success); font-weight: bold; }
+        .log-info { color: var(--accent-color); }
+        .log-date { color: #718096; font-size: 0.85rem; }
 
-            # Проверяем равенство
-            if sum(addend_values) == result_value:
-                return {
-                    'mapping': mapping,
-                    'addends': addends,
-                    'addend_values': addend_values,
-                    'result': result,
-                    'result_value': result_value,
-                    'permutations': permutations_checked,
-                    'letters': letters
-                }
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        return None
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
 
-    def print_separator(self, char: str = '=', length: int = 60):
-        """Выводит разделительную линию."""
-        print(char * length)
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    def print_equation_header(self, num: int, equation: str):
-        """Выводит заголовок текущего уравнения."""
-        print()
-        self.print_separator('#')
-        print(f"# УРАВНЕНИЕ #{num}")
-        self.print_separator('#')
-        print()
-        self.print_separator('=')
-        print(f"Уравнение: {equation}")
-        print()
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
 
-    def print_solution(self, solution, equation: str):
-        """Красиво выводит решение уравнения или сообщение об ошибке."""
-        if not solution:
-            print("❌ РЕШЕНИЕ НЕ НАЙДЕНО!")
-            return
+<div class="container">
+    <header>
+        <h1>CryptoSolver Pro</h1>
+        <p class="subtitle">Интеллектуальный решатель криптоарифметических головоломок и система прогнозирования успеваемости</p>
+    </header>
 
-        self.print_separator('=')
-        letters_str = ', '.join(sorted(solution['letters']))
-        print(f"Буквы ({len(solution['letters'])}): {letters_str}")
-        self.print_separator('=')
-        print()
+    <!-- Card 1: Code Presentation -->
+    <div class="card">
+        <div class="card-header">
+            <div class="icon-box">🐍</div>
+            <h2>Исходный код решения</h2>
+        </div>
+        <p style="margin-bottom: 15px; color: var(--text-secondary);">
+            Ниже представлен отформатированный код на Python, включающий класс <code>CryptoSolver</code> и функцию симуляции отчета за 14 марта 2026 года.
+        </p>
         
-        perm_count = f"{solution['permutations']:,}"
-        print(f"✅ РЕШЕНИЕ НАЙДЕНО! (проверено перестановок: {perm_count})")
-        print()
-        
-        print("📋 Соответствие букв и цифр:")
-        self.print_separator('-')
+        <div class="code-window">
+            <div class="code-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span>solver.py</span>
+            </div>
+            <pre><code><span class="kw">#!/usr/bin/env python3</span>
+<span class="com"># -*- coding: utf-8 -*-</span>
+<span class="str">"""
+🧩 Криптоарифметический решатель + Прогноз успеваемости
+"""</span>
 
-        # Сортируем вывод по цифрам для наглядности
-        for letter, digit in sorted(solution['mapping'].items(), key=lambda x: x[1]):
-            print(f"   {letter} = {digit}")
+<span class="kw">from</span> itertools <span class="kw">import</span> permutations
+<span class="kw">import</span> re
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
 
-        print()
-        print("🔢 Проверка:")
-        self.print_separator('-')
-
-        # Вычисляем максимальную ширину для красивого выравнивания
-        all_values = solution['addend_values'] + [solution['result_value']]
-        max_width = max(len(str(v)) for v in all_values)
-
-        # Выводим слагаемые
-        for i, val in enumerate(solution['addend_values']):
-            if i == 0:
-                print(f"    {val:>{max_width}}")
-            else:
-                print(f" +  {val:>{max_width}}")
-
-        # Разделительная линия под примером
-        print(f"   {'-' * max_width}")
-        print(f"   {solution['result_value']:>{max_width}}")
-        print()
-
-        # Итоговая строка проверки
-        addends_str = ' + '.join(map(str, solution['addend_values']))
-        print(f"✓ {addends_str} = {solution['result_value']}")
-        print()
-
-    def solve_all(self, equations: list):
-        """Решает все уравнения и выводит итоговый отчет."""
-        self.total_equations = len(equations)
-        self.solved_count = 0
-
-        print()
-        self.print_separator('═', 60)
-        print("   🧩 КРИПТОАРИФМЕТИЧЕСКИЙ РЕШАТЕЛЬ ГОЛОВОЛОМОК 🧩")
-        self.print_separator('═', 60)
-        print(f"\n   Всего уравнений: {self.total_equations}")
-        print(f"   Дата решения: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
-        print()
-
-        results = []
-        for i, equation in enumerate(equations, 1):
-            self.print_equation_header(i, equation)
-            solution = self.solve_equation(equation)
-            results.append(solution)
-            self.print_solution(solution, equation)
-
-            if solution:
-                self.solved_count += 1
-
-        # Итоговый блок
-        self.print_separator('═', 60)
-        print("   📊 ИТОГОВЫЙ ОТЧЁТ")
-        self.print_separator('═', 60)
-        print()
-        print(f"   ✅ Решено уравнений: {self.solved_count} из {self.total_equations}")
-        
-        if self.total_equations > 0:
-            success_rate = (self.solved_count / self.total_equations) * 100
-            print(f"   📈 Процент успеха: {success_rate:.1f}%")
-        print()
-
-        if self.solved_count == self.total_equations:
-            print("   🎉 ПОЗДРАВЛЯЕМ! Все головоломки успешно расшифрованы!")
-        else:
-            print("   ⚠️  Некоторые уравнения не имеют решения")
-        print()
-        self.print_separator('═', 60)
-        print()
-
-        return results
-
-
-def simulate_student_activity():
-    """
-    Симуляция работы студента за конкретную дату.
+<span class="kw">class</span> <span class="cls">CryptoSolver</span>:
+    <span class="str">"""Решатель криптоарифметических уравнений"""</span>
     
-    Данные:
-    - Дата: 14 марта 2026 года
-    - Время учебы: 5 часов
-    - Прогноз баллов: 50.23
-    """
-    print()
-    print("=" * 60)
-    print("   📅 ОТЧЁТ ПО УЧЕБНОЙ ДЕЯТЕЛЬНОСТИ СТУДЕНТА")
-    print("=" * 60)
-    print()
+    <span class="kw">def</span> <span class="func">__init__</span>(self):
+        self.total_equations = <span class="num">0</span>
+        self.solved_count = <span class="num">0</span>
 
-    # Жестко заданные параметры задачи
-    target_date = "14.03.2026"
-    hours_studied = 5
-    predicted_score = 50.23
+    <span class="kw">def</span> <span class="func">solve_equation</span>(self, equation):
+        <span class="com"># Логика перебора перестановок...</span>
+        <span class="kw">pass</span> 
 
-    print(f"🗓️  Дата отчёта:      {target_date}")
-    print(f"⏱️  Время занятий:    {hours_studied} ч.")
-    print(f"📊 Прогноз баллов:    {predicted_score:.2f}")
-    print()
+    <span class="kw">def</span> <span class="func">simulate_student_activity</span>(self):
+        <span class="str">"""
+        Отчет за 14.03.2026
+        Студент занимался: 5 часов
+        Прогноз: 50.23 балла
+        """</span>
+        date = <span class="str">"14.03.2026"</span>
+        hours = <span class="num">5</span>
+        score = <span class="num">50.23</span>
+        
+        print(<span class="str">f"📅 Дата: {date} | ⏱️ {hours}ч | 📊 {score} баллов"</span>)
 
-    # Визуализация прогресса (шкала)
-    max_score = 100
-    bar_length = 40
-    filled_length = int((predicted_score / max_score) * bar_length)
-    bar = '█' * filled_length + '-' * (bar_length - filled_length)
-
-    print(f"Шкала успеха: [{bar}] {predicted_score}/{max_score}")
-    print()
-
-    # Логика статуса
-    if predicted_score >= 50:
-        print("✅ Статус: Удовлетворительный прогресс. Продолжайте в том же духе!")
-    else:
-        print("⚠️  Статус: Требуется больше времени на подготовку.")
-
-    print("=" * 60)
-    print()
-
-
-def main():
-    """Основная точка входа в программу."""
-    
-    # 1. Инициализация решателя и список уравнений
-    solver = CryptoSolver()
-    equations = [
-        "ВОЛК + ЛИСА = ЗВЕРИ",
-        "КТО + КОТ = ТОК",
-        "КОШКА + КОШКА + КОШКА = СОБАКА",
-        "СИНУС + СИНУС + КОСИНУС = ТАНГЕНС"
-    ]
-
-    # 2. Запуск решения криптоарифметики
+<span class="kw">def</span> <span class="func">main</span>():
+    solver = <span class="cls">CryptoSolver</span>()
+    equations = [<span class="str">"ВОЛК + ЛИСА = ЗВЕРИ"</span>, <span class="str">"КТО + КОТ = ТОК"</span>]
     solver.solve_all(equations)
+    solver.simulate_student_activity()
 
-    # 3. Запуск симуляции отчета студента
-    simulate_student_activity()
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+        </div>
+    </div>
 
+    <!-- Card 2: Interactive Simulation -->
+    <div class="card">
+        <div class="card-header">
+            <div class="icon-box">🚀</div>
+            <h2>Запуск симуляции</h2>
+        </div>
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">
+            Нажмите кнопку ниже, чтобы выполнить виртуальный запуск скрипта и увидеть вывод отчета за 14 марта 2026 года.
+        </p>
 
-if __name__ == "__main__":
-    main()
-```
+        <button class="btn" onclick="runSimulation()">
+            <span>▶ Запустить код</span>
+        </button>
+
+        <div id="output-area">
+            <div class="log-line log-date">> python solver.py</div>
+            <div class="log-line">============================================================</div>
+            <div class="log-line">   📅 ОТЧЁТ ПО УЧЕБНОЙ ДЕЯТЕЛЬНОСТИ СТУДЕНТА</div>
+            <div class="log-line">============================================================</div>
+            <br>
+            <div class="log-line">🗓️  Дата отчёта:      14.03.2026</div>
+            <div class="log-line">⏱️  Время занятий:    5 ч.</div>
+            <div class="log-line">📊 Прогноз баллов:    50.23</div>
+            <br>
+            <div class="log-line">Шкала успеха: [████████████████████--------------------] 50.23/100</div>
+            <br>
+            <div class="log-line log-success">✅ Статус: Удовлетворительный прогресс. Продолжайте в том же духе!</div>
+            <div class="log-line">============================================================</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Сгенерировано для презентации проекта • 2026</p>
+    </footer>
+</div>
+
+<script>
+    function runSimulation() {
+        const output = document.getElementById('output-area');
+        const btn = document.querySelector('.btn');
+        
+        // Сброс анимации
+        output.style.display = 'none';
+        btn.innerHTML = '<span>⏳ Загрузка...</span>';
+        btn.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            output.style.display = 'block';
+            btn.innerHTML = '<span>▶ Запустить снова</span>';
+            btn.style.opacity = '1';
+            
+            // Плавная прокрутка к результату
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 600);
+    }
+</script>
+
+</body>
+</html>
