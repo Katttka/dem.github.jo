@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Моя презентация</title>
-    </head>
-  <body>
-    
-<p>
-  #!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Криптоарифметический решатель головоломок
+🧩 Криптоарифметический решатель головоломок + Модуль прогноза успеваемости
 Расшифровывает уравнения вида: СЛОВО + СЛОВО = СЛОВО
+А также симулирует прогноз баллов на основе времени учебы.
 """
 
 from itertools import permutations
@@ -41,13 +34,12 @@ class CryptoSolver:
         return addends, result
     
     def solve_equation(self, equation):
-        """Решает одно криптоарифметическое уравнение"""
+        """Решает одно криптоарифметическое уравнение перебором перестановок"""
         addends, result = self.parse_equation(equation)
         
         if not addends or not result:
             return None
         
-        # Собираем все уникальные буквы
         all_letters = set()
         for word in addends + [result]:
             all_letters.update(word)
@@ -56,24 +48,19 @@ class CryptoSolver:
         if len(letters) > 10:
             return None
         
-        # Первые буквы не могут быть 0
-        first_letters = set(word[0] for word in addends + [result])
-        
+        first_letters = {word[0] for word in addends + [result]}
         permutations_checked = 0
         
         for perm in permutations(range(10), len(letters)):
             permutations_checked += 1
             mapping = dict(zip(letters, perm))
             
-            # Проверяем, что первые буквы не 0
             if any(mapping[letter] == 0 for letter in first_letters):
                 continue
             
-            # Вычисляем значения
             addend_values = [self.word_to_number(word, mapping) for word in addends]
             result_value = self.word_to_number(result, mapping)
             
-            # Проверяем уравнение
             if sum(addend_values) == result_value:
                 return {
                     'mapping': mapping,
@@ -88,11 +75,9 @@ class CryptoSolver:
         return None
     
     def print_separator(self, char='=', length=60):
-        """Выводит разделительную линию"""
         print(char * length)
     
     def print_equation_header(self, num, equation):
-        """Выводит заголовок уравнения"""
         print()
         self.print_separator('#')
         print(f"# УРАВНЕНИЕ #{num}")
@@ -103,7 +88,6 @@ class CryptoSolver:
         print()
     
     def print_solution(self, solution, equation):
-        """Красиво выводит решение уравнения"""
         if not solution:
             print("❌ РЕШЕНИЕ НЕ НАЙДЕНО!")
             return
@@ -124,29 +108,24 @@ class CryptoSolver:
         print("🔢 Проверка:")
         self.print_separator('-')
         
-        # Вычисляем максимальную ширину для выравнивания
         all_values = solution['addend_values'] + [solution['result_value']]
         max_width = max(len(str(v)) for v in all_values)
         
-        # Выводим слагаемые
         for i, val in enumerate(solution['addend_values']):
             if i == 0:
                 print(f"    {val:>{max_width}}")
             else:
                 print(f" +  {val:>{max_width}}")
         
-        # Выводим разделительную линию
         print(f"   {'-' * max_width}")
         print(f"   {solution['result_value']:>{max_width}}")
         print()
         
-        # Выводим итоговую проверку
         addends_str = ' + '.join(map(str, solution['addend_values']))
         print(f"✓ {addends_str} = {solution['result_value']}")
         print()
     
     def solve_all(self, equations):
-        """Решает все уравнения и выводит красивый отчёт"""
         self.total_equations = len(equations)
         self.solved_count = 0
         
@@ -168,7 +147,6 @@ class CryptoSolver:
             if solution:
                 self.solved_count += 1
         
-        # Итоговый отчёт
         self.print_separator('═', 60)
         print("   📊 ИТОГОВЫЙ ОТЧЁТ")
         self.print_separator('═', 60)
@@ -188,11 +166,52 @@ class CryptoSolver:
         return results
 
 
+def simulate_student_activity():
+    """
+    Симуляция работы студента за конкретную дату.
+    Дата: 14 марта 2026 года
+    Время учебы: 5 часов
+    Прогноз баллов: 50.23
+    """
+    print()
+    print("=" * 60)
+    print("   📅 ОТЧЁТ ПО УЧЕБНОЙ ДЕЯТЕЛЬНОСТИ СТУДЕНТА")
+    print("=" * 60)
+    print()
+    
+    # Данные
+    target_date = "14.03.2026"
+    hours_studied = 5
+    predicted_score = 50.23
+    
+    print(f"🗓️  Дата отчёта: {target_date}")
+    print(f"⏱️  Время занятий: {hours_studied} ч.")
+    print(f"📊 Прогноз баллов: {predicted_score:.2f}")
+    print()
+    
+    # Визуализация прогресса (простая гистограмма)
+    max_score = 100
+    bar_length = 40
+    filled_length = int((predicted_score / max_score) * bar_length)
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    
+    print(f"Шкала успеха: [{bar}] {predicted_score}/{max_score}")
+    print()
+    
+    if predicted_score >= 50:
+        print("✅ Статус: Удовлетворительный прогресс. Продолжайте в том же духе!")
+    else:
+        print("⚠️  Статус: Требуется больше времени на подготовку.")
+    
+    print("=" * 60)
+    print()
+
+
 def main():
     """Основная функция программы"""
     solver = CryptoSolver()
     
-    # Все уравнения для решения
+    # 1. Решение криптоарифметических уравнений
     equations = [
         "ВОЛК + ЛИСА = ЗВЕРИ",
         "КТО + КОТ = ТОК",
@@ -201,8 +220,10 @@ def main():
     ]
     
     solver.solve_all(equations)
+    
+    # 2. Симуляция работы студента за 14 марта 2026 года
+    simulate_student_activity()
 
 
 if __name__ == "__main__":
     main()
-</p>
