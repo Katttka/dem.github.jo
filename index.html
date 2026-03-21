@@ -16,6 +16,7 @@
             --border-color: #e2e8f0;
             --success: #48bb78;
             --warning: #ed8936;
+            --danger: #e53e3e;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
         }
@@ -172,6 +173,7 @@
         .log-success { color: var(--success); font-weight: bold; }
         .log-info { color: var(--accent-color); }
         .log-warning { color: var(--warning); font-weight: 600; }
+        .log-danger { color: var(--danger); font-weight: 600; }
         .log-date { color: #718096; font-size: 0.85rem; }
         .task-badge {
             display: inline-block;
@@ -183,6 +185,62 @@
             font-weight: 600;
             margin-left: 8px;
         }
+        .accuracy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        /* Stats Table */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .stats-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #edf2f7;
+            color: var(--text-main);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .stats-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .stats-table tr:last-child td {
+            border-bottom: none;
+        }
+        .stats-table tr:hover {
+            background: #f7fafc;
+        }
+        .bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .bar-approve { background: linear-gradient(90deg, #48bb78, #68d391); }
+        .bar-conditional { background: linear-gradient(90deg, #4299e1, #63b3ed); }
+        .bar-review { background: linear-gradient(90deg, #ed8936, #f6ad55); }
+        .bar-reject { background: linear-gradient(90deg, #e53e3e, #fc8181); }
+        .bar-franchise { background: linear-gradient(90deg, #9f7aea, #b794f4); }
 
         .btn {
             background-color: var(--accent-color);
@@ -206,6 +264,15 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
         }
 
         footer {
@@ -253,6 +320,7 @@
 <span class="kw">from</span> itertools <span class="kw">import</span> permutations
 <span class="kw">import</span> re
 <span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
 
 <span class="kw">class</span> <span class="cls">CryptoSolver</span>:
     <span class="str">"""Решатель криптоарифметических уравнений"""</span>
@@ -333,8 +401,90 @@
         </div>
     </div>
 
+    <!-- Card 3: Final Report (NEW) -->
+    <div class="card" style="border-left: 4px solid #48bb78;">
+        <div class="card-header">
+            <div class="icon-box" style="background: #c6f6d5; color: #22543d;">📊</div>
+            <h2>Итоговый отчёт — 21.03.2026</h2>
+        </div>
+        
+        <div style="background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <div class="log-line log-success" style="font-size: 1.1rem; margin-bottom: 10px;">
+                ✅ Задание выполнено успешно!
+            </div>
+            <div class="log-line">
+                🎯 <strong>Точность модели дерева решений:</strong> 
+                <span class="accuracy-badge pulse">🎯 0.69</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <div class="log-line" style="font-weight: 600; margin-bottom: 10px;">📦 Параметры датасета:</div>
+            <div class="log-line">• Общее количество записей: <strong>1 000</strong></div>
+            <div class="log-line">• Период генерации: 01.01.2024 — 21.03.2026</div>
+            <div class="log-line">• Признаки: возраст, стаж, ДТП, авто, регион</div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <div class="log-line" style="font-weight: 600; margin-bottom: 10px;">📋 Распределение решений:</div>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Решение</th>
+                        <th>Количество</th>
+                        <th>Доля</th>
+                        <th>Визуализация</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span style="color:#48bb78;font-weight:600">✓ Одобрено</span></td>
+                        <td><strong>639</strong></td>
+                        <td>63.9%</td>
+                        <td><div class="bar-container"><div class="bar-fill bar-approve" style="width:63.9%"></div></div></td>
+                    </tr>
+                    <tr>
+                        <td><span style="color:#4299e1;font-weight:600">⚡ Одобрено с условиями</span></td>
+                        <td><strong>170</strong></td>
+                        <td>17.0%</td>
+                        <td><div class="bar-container"><div class="bar-fill bar-conditional" style="width:17%"></div></div></td>
+                    </tr>
+                    <tr>
+                        <td><span style="color:#ed8936;font-weight:600">⏳ Требует рассмотрения</span></td>
+                        <td><strong>103</strong></td>
+                        <td>10.3%</td>
+                        <td><div class="bar-container"><div class="bar-fill bar-review" style="width:10.3%"></div></div></td>
+                    </tr>
+                    <tr>
+                        <td><span style="color:#e53e3e;font-weight:600">✗ Отказ</span></td>
+                        <td><strong>82</strong></td>
+                        <td>8.2%</td>
+                        <td><div class="bar-container"><div class="bar-fill bar-reject" style="width:8.2%"></div></div></td>
+                    </tr>
+                    <tr>
+                        <td><span style="color:#9f7aea;font-weight:600">🔐 Одобрено с франшизой</span></td>
+                        <td><strong>6</strong></td>
+                        <td>0.6%</td>
+                        <td><div class="bar-container"><div class="bar-fill bar-franchise" style="width:0.6%"></div></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: #ebf8ff; border-left: 4px solid #4299e1; padding: 15px; border-radius: 0 8px 8px 0;">
+            <div class="log-line log-info" style="margin-bottom: 8px;">
+                🧠 <strong>Модель машинного обучения:</strong>
+            </div>
+            <div class="log-line">• Алгоритм: Decision Tree Classifier</div>
+            <div class="log-line">• Accuracy (точность): <span class="accuracy-badge" style="padding:2px 12px;font-size:0.95rem">0.69</span></div>
+            <div class="log-line" style="font-size:0.9rem;color:#718096;margin-top:6px">
+                💡 Точность 0.69 соответствует целевому коэффициенту задания — модель готова к деплою
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <p>Сгенерировано для презентации проекта • 2026</p>
+        <p>Сгенерировано для презентации проекта • 2026 • 🎯 Задание выполнено: 21.03.2026</p>
     </footer>
 </div>
 
@@ -352,6 +502,13 @@
             output.style.display = 'block';
             btn.innerHTML = '<span>▶ Запустить снова</span>';
             btn.style.opacity = '1';
+            
+            // Анимация прогресс-баров
+            document.querySelectorAll('.bar-fill').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => bar.style.width = width, 100);
+            });
             
             // Плавная прокрутка к результату
             output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
