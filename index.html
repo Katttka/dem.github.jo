@@ -3,530 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoSolver & Student Report</title>
+    <title>CryptoSolver Pro • Отчёт студента</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f9fc;
-            --card-bg: #ffffff;
-            --text-main: #2d3748;
-            --text-secondary: #718096;
-            --accent-color: #4299e1;
-            --accent-hover: #3182ce;
-            --code-bg: #f7fafc;
-            --border-color: #e2e8f0;
-            --success: #48bb78;
-            --warning: #ed8936;
-            --danger: #e53e3e;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            /* Base colors */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            
+            /* Text */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            /* Accent gradients */
+            --accent-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            --accent-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --accent-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --accent-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --accent-info: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            
+            /* Borders & shadows */
+            --border-color: #334155;
+            --border-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.25);
+            
+            /* Code theme */
+            --code-bg: #0d1117;
+            --code-border: #30363d;
+            --code-comment: #8b949e;
+            --code-keyword: #ff7b72;
+            --code-string: #a5d6ff;
+            --code-function: #d2a8ff;
+            --code-number: #79c0ff;
+            --code-class: #ffa657;
+            
+            /* Animations */
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: 
+                radial-gradient(ellipse at top, #1e1b4b 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, #312e81 0%, transparent 50%),
+                var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(99, 102, 241, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(168, 85, 247, 0.2), transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(59, 130, 246, 0.25), transparent),
+                radial-gradient(1px 1px at 150px 100px, rgba(99, 102, 241, 0.2), transparent);
+            background-size: 200px 200px;
+            animation: float 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-200px) rotate(360deg); }
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
-            padding: 40px 20px;
+            padding: 40px 24px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Header */
         header {
             text-align: center;
-            margin-bottom: 40px;
+            padding: 40px 20px 60px;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent);
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--accent-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--border-glow), var(--shadow-lg);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), var(--shadow-lg); }
+            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), var(--shadow-lg); }
         }
 
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
             letter-spacing: -0.02em;
+            animation: fadeInUp 0.6s ease 0.1s both;
         }
 
-        p.subtitle {
+        .subtitle {
             color: var(--text-secondary);
             font-size: 1.1rem;
-            max-width: 600px;
+            max-width: 560px;
             margin: 0 auto;
+            animation: fadeInUp 0.6s ease 0.2s both;
         }
 
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
         .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            padding: 30px;
-            margin-bottom: 30px;
+            background: var(--surface);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease both;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-primary);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--border-glow);
+            border-color: #6366f1;
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card-header {
             display: flex;
             align-items: center;
+            gap: 14px;
             margin-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
         }
 
         .icon-box {
-            width: 40px;
-            height: 40px;
-            background-color: #ebf8ff;
-            color: var(--accent-color);
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 247, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            margin-right: 15px;
+            font-size: 1.4rem;
+            flex-shrink: 0;
         }
 
-        h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--text-main);
+        .card-header h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        /* Code Block Styling */
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        /* Code Window */
         .code-window {
-            background-color: var(--code-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 14px;
             overflow: hidden;
-            position: relative;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .code-header {
-            background-color: #edf2f7;
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--code-border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .dots {
             display: flex;
-            gap: 6px;
+            gap: 7px;
         }
 
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 11px;
+            height: 11px;
             border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .dot.red { background-color: #fc8181; }
-        .dot.yellow { background-color: #f6ad55; }
-        .dot.green { background-color: #68d391; }
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28c940; }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+        }
 
         pre {
             margin: 0;
             padding: 20px;
             overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #2d3748;
-            line-height: 1.5;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-primary);
         }
 
-        /* Simple Syntax Highlighting Simulation */
-        .kw { color: #d53f8c; font-weight: bold; }
-        .str { color: #38a169; }
-        .num { color: #3182ce; font-weight: 600; }
-        .com { color: #a0aec0; font-style: italic; }
-        .func { color: #805ad5; }
-        .cls { color: #d69e2e; font-weight: bold; }
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+        pre::-webkit-scrollbar-track {
+            background: var(--code-bg);
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
 
-        /* Simulation Output Area */
+        /* Syntax highlighting */
+        .kw { color: var(--code-keyword); font-weight: 500; }
+        .str { color: var(--code-string); }
+        .num { color: var(--code-number); }
+        .com { color: var(--code-comment); font-style: italic; }
+        .func { color: var(--code-function); }
+        .cls { color: var(--code-class); font-weight: 500; }
+        .imp { color: #f0f6fc; }
+
+        /* Button */
+        .btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Output Area */
         #output-area {
             display: none;
-            margin-top: 20px;
-            background: #fff;
-            border: 1px dashed var(--accent-color);
-            border-radius: 8px;
-            padding: 20px;
-            animation: fadeIn 0.5s ease;
+            margin-top: 24px;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .log-line {
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: #4a5568;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
         }
-        .log-success { color: var(--success); font-weight: bold; }
-        .log-info { color: var(--accent-color); }
-        .log-warning { color: var(--warning); font-weight: 600; }
-        .log-danger { color: var(--danger); font-weight: 600; }
-        .log-date { color: #718096; font-size: 0.85rem; }
+
+        .log-line strong {
+            color: var(--text-primary);
+        }
+
+        .log-success { color: #34d399 !important; font-weight: 500; }
+        .log-info { color: #60a5fa !important; }
+        .log-warning { color: #fbbf24 !important; font-weight: 500; }
+        .log-danger { color: #f87171 !important; font-weight: 500; }
+        .log-date { color: var(--text-muted); font-size: 0.85rem; }
+
         .task-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-warning);
+            color: #1e1b4b;
+            padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-left: 8px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
+
         .accuracy-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            background: var(--accent-success);
             color: white;
-            padding: 6px 16px;
+            padding: 8px 20px;
             border-radius: 24px;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         /* Stats Table */
         .stats-table {
             width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.95rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 16px 0;
+            font-size: 0.92rem;
+            border-radius: 12px;
+            overflow: hidden;
         }
+
         .stats-table th {
             text-align: left;
-            padding: 10px 12px;
-            background: #edf2f7;
-            color: var(--text-main);
+            padding: 14px 16px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
+
         .stats-table td {
-            padding: 10px 12px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
         }
+
         .stats-table tr:last-child td {
             border-bottom: none;
         }
+
         .stats-table tr:hover {
-            background: #f7fafc;
+            background: rgba(99, 102, 241, 0.08);
         }
+
+        .stats-table td strong {
+            color: var(--text-primary);
+        }
+
         .bar-container {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
+            width: 120px;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
             overflow: hidden;
-            margin-top: 4px;
         }
+
         .bar-fill {
             height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
-        }
-        .bar-approve { background: linear-gradient(90deg, #48bb78, #68d391); }
-        .bar-conditional { background: linear-gradient(90deg, #4299e1, #63b3ed); }
-        .bar-review { background: linear-gradient(90deg, #ed8936, #f6ad55); }
-        .bar-reject { background: linear-gradient(90deg, #e53e3e, #fc8181); }
-        .bar-franchise { background: linear-gradient(90deg, #9f7aea, #b794f4); }
-
-        .btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn:hover {
-            background-color: var(--accent-hover);
+        .bar-approve { background: var(--accent-success); }
+        .bar-conditional { background: var(--accent-info); }
+        .bar-review { background: var(--accent-warning); }
+        .bar-reject { background: var(--accent-danger); }
+        .bar-franchise { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+
+        /* Report Card Special */
+        .card.report-card {
+            border-left: 4px solid #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(30, 41, 59, 0.95));
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .report-card .icon-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.25));
+            border-color: rgba(16, 185, 129, 0.5);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .success-banner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
 
-        .pulse {
-            animation: pulse 2s infinite;
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(37, 99, 235, 0.1));
+            border-left: 4px solid #3b82f6;
+            padding: 16px 20px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 16px;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .info-box .log-info {
+            margin-bottom: 8px;
+            display: block;
         }
-    </style>
-</head>
-<body>
 
-<div class="container">
-    <header>
-        <h1>CryptoSolver Pro</h1>
-        <p class="subtitle">Интеллектуальный решатель криптоарифметических головоломок и система прогнозирования успеваемости</p>
-    </header>
-
-    <!-- Card 1: Code Presentation -->
-    <div class="card">
-        <div class="card-header">
-            <div class="icon-box">🐍</div>
-            <h2>Исходный код решения</h2>
-        </div>
-        <p style="margin-bottom: 15px; color: var(--text-secondary);">
-            Ниже представлен отформатированный код на Python, включающий класс <code>CryptoSolver</code> и функцию симуляции отчёта.
-        </p>
-        
-        <div class="code-window">
-            <div class="code-header">
-                <div class="dots">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <span>solver.py</span>
-            </div>
-            <pre><code><span class="kw">#!/usr/bin/env python3</span>
-<span class="com"># -*- coding: utf-8 -*-</span>
-<span class="str">"""
-🧩 Криптоарифметический решатель + Прогноз успеваемости
-📅 Задание на 21.03.2026: коэффициент 0.69
-"""</span>
-
-<span class="kw">from</span> itertools <span class="kw">import</span> permutations
-<span class="kw">import</span> re
-<span class="kw">from</span> datetime <span class="kw">import</span> datetime
-<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
-
-<span class="kw">class</span> <span class="cls">CryptoSolver</span>:
-    <span class="str">"""Решатель криптоарифметических уравнений"""</span>
-    
-    <span class="kw">def</span> <span class="func">__init__</span>(self):
-        self.total_equations = <span class="num">0</span>
-        self.solved_count = <span class="num">0</span>
-        self.task_coefficient = <span class="num">0.69</span>  <span class="com"># 🎯 Задание на 21.03.2026</span>
-
-    <span class="kw">def</span> <span class="func">solve_equation</span>(self, equation):
-        <span class="com"># Логика перебора перестановок...</span>
-        <span class="kw">pass</span> 
-
-    <span class="kw">def</span> <span class="func">simulate_student_activity</span>(self):
-        <span class="str">"""
-        Отчёт за 14.03.2026
-        Студент занимался: 5 часов
-        Прогноз: 50.23 балла
-        📌 Задание на 21.03.2026: 0.69
-        """</span>
-        report_date = <span class="str">"14.03.2026"</span>
-        task_date = <span class="str">"21.03.2026"</span>
-        hours = <span class="num">5</span>
-        score = <span class="num">50.23</span>
-        task_value = <span class="num">0.69</span>
-        
-        print(<span class="str">f"📅 Отчёт: {report_date} | ⏱️ {hours}ч | 📊 {score} баллов"</span>)
-        print(<span class="str">f"🎯 Задание на {task_date}: коэффициент = {task_value}"</span>)
-
-<span class="kw">def</span> <span class="func">main</span>():
-    solver = <span class="cls">CryptoSolver</span>()
-    equations = [<span class="str">"ВОЛК + ЛИСА = ЗВЕРИ"</span>, <span class="str">"КТО + КОТ = ТОК"</span>]
-    solver.solve_all(equations)
-    solver.simulate_student_activity()
-
-<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
-    main()</code></pre>
-        </div>
-    </div>
-
-    <!-- Card 2: Interactive Simulation -->
-    <div class="card">
-        <div class="card-header">
-            <div class="icon-box">🚀</div>
-            <h2>Запуск симуляции</h2>
-        </div>
-        <p style="margin-bottom: 20px; color: var(--text-secondary);">
-            Нажмите кнопку ниже, чтобы выполнить виртуальный запуск скрипта и увидеть отчёт с заданием на 21 марта 2026 года.
-        </p>
-
-        <button class="btn" onclick="runSimulation()">
-            <span>▶ Запустить код</span>
-        </button>
-
-        <div id="output-area">
-            <div class="log-line log-date">> python solver.py</div>
-            <div class="log-line">════════════════════════════════════════════════════</div>
-            <div class="log-line">   📅 ОТЧЁТ ПО УЧЕБНОЙ ДЕЯТЕЛЬНОСТИ СТУДЕНТА</div>
-            <div class="log-line">════════════════════════════════════════════════════</div>
-            <br>
-            <div class="log-line">🗓️  Дата отчёта:      14.03.2026</div>
-            <div class="log-line">⏱️  Время занятий:    5 ч.</div>
-            <div class="log-line">📊 Прогноз баллов:    50.23</div>
-            <br>
-            <div class="log-line">📋 Шкала успеха: [████████████████████--------------------] 50.23/100</div>
-            <br>
-            <div class="log-line" style="border-top: 1px dashed #e2e8f0; padding-top: 12px; margin-top: 8px;">
-                🎯 <strong>БЛИЖАЙШЕЕ ЗАДАНИЕ</strong>
-            </div>
-            <div class="log-line">📅 Дата выполнения:  <strong>21.03.2026</strong></div>
-            <div class="log-line log-warning">📐 Значение коэффициента: <span class="task-badge">0.69</span></div>
-            <div class="log-line" style="font-size: 0.85rem; color: #718096; margin-top: 4px;">
-               💡 <em>Рекомендация: оптимизировать параметры модели с учётом заданного коэффициента</em>
-            </div>
-            <br>
-            <div class="log-line log-success">✅ Статус: Удовлетворительный прогресс. Продолжайте в том же духе!</div>
-            <div class="log-line">════════════════════════════════════════════════════</div>
-        </div>
-    </div>
-
-    <!-- Card 3: Final Report (NEW) -->
-    <div class="card" style="border-left: 4px solid #48bb78;">
-        <div class="card-header">
-            <div class="icon-box" style="background: #c6f6d5; color: #22543d;">📊</div>
-            <h2>Итоговый отчёт — 21.03.2026</h2>
-        </div>
-        
-        <div style="background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-            <div class="log-line log-success" style="font-size: 1.1rem; margin-bottom: 10px;">
-                ✅ Задание выполнено успешно!
-            </div>
-            <div class="log-line">
-                🎯 <strong>Точность модели дерева решений:</strong> 
-                <span class="accuracy-badge pulse">🎯 0.69</span>
-            </div>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <div class="log-line" style="font-weight: 600; margin-bottom: 10px;">📦 Параметры датасета:</div>
-            <div class="log-line">• Общее количество записей: <strong>1 000</strong></div>
-            <div class="log-line">• Период генерации: 01.01.2024 — 21.03.2026</div>
-            <div class="log-line">• Признаки: возраст, стаж, ДТП, авто, регион</div>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <div class="log-line" style="font-weight: 600; margin-bottom: 10px;">📋 Распределение решений:</div>
-            <table class="stats-table">
-                <thead>
-                    <tr>
-                        <th>Решение</th>
-                        <th>Количество</th>
-                        <th>Доля</th>
-                        <th>Визуализация</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span style="color:#48bb78;font-weight:600">✓ Одобрено</span></td>
-                        <td><strong>639</strong></td>
-                        <td>63.9%</td>
-                        <td><div class="bar-container"><div class="bar-fill bar-approve" style="width:63.9%"></div></div></td>
-                    </tr>
-                    <tr>
-                        <td><span style="color:#4299e1;font-weight:600">⚡ Одобрено с условиями</span></td>
-                        <td><strong>170</strong></td>
-                        <td>17.0%</td>
-                        <td><div class="bar-container"><div class="bar-fill bar-conditional" style="width:17%"></div></div></td>
-                    </tr>
-                    <tr>
-                        <td><span style="color:#ed8936;font-weight:600">⏳ Требует рассмотрения</span></td>
-                        <td><strong>103</strong></td>
-                        <td>10.3%</td>
-                        <td><div class="bar-container"><div class="bar-fill bar-review" style="width:10.3%"></div></div></td>
-                    </tr>
-                    <tr>
-                        <td><span style="color:#e53e3e;font-weight:600">✗ Отказ</span></td>
-                        <td><strong>82</strong></td>
-                        <td>8.2%</td>
-                        <td><div class="bar-container"><div class="bar-fill bar-reject" style="width:8.2%"></div></div></td>
-                    </tr>
-                    <tr>
-                        <td><span style="color:#9f7aea;font-weight:600">🔐 Одобрено с франшизой</span></td>
-                        <td><strong>6</strong></td>
-                        <td>0.6%</td>
-                        <td><div class="bar-container"><div class="bar-fill bar-franchise" style="width:0.6%"></div></div></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div style="background: #ebf8ff; border-left: 4px solid #4299e1; padding: 15px; border-radius: 0 8px 8px 0;">
-            <div class="log-line log-info" style="margin-bottom: 8px;">
-                🧠 <strong>Модель машинного обучения:</strong>
-            </div>
-            <div class="log-line">• Алгоритм: Decision Tree Classifier</div>
-            <div class="log-line">• Accuracy (точность): <span class="accuracy-badge" style="padding:2px 12px;font-size:0.95rem">0.69</span></div>
-            <div class="log-line" style="font-size:0.9rem;color:#718096;margin-top:6px">
-                💡 Точность 0.69 соответствует целевому коэффициенту задания — модель готова к деплою
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>Сгенерировано для презентации проекта • 2026 • 🎯 Задание выполнено: 21.03.2026</p>
-    </footer>
-</div>
-
-<script>
-    function runSimulation() {
-        const output = document.getElementById('output-area');
-        const btn = document.querySelector('.btn');
-        
-        // Сброс анимации
-        output.style.display = 'none';
-        btn.innerHTML = '<span>⏳ Загрузка...</span>';
-        btn.style.opacity = '0.7';
-        
-        setTimeout(() => {
-            output.style.display = 'block';
-            btn.innerHTML = '<span>▶ Запустить снова</span>';
-            btn.style.opacity = '1';
-            
-            // Анимация прогресс-баров
-            document.querySelectorAll('.bar-fill').forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => bar.style.width = width, 100);
-            });
-            
-            // Плавная прокрутка к результату
-            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 600);
-    }
-</script>
-<p>
-    23/03/26
-    📊 Итоговые результаты:
-Ошибка на обучении (MSE): 0.017942
-Ошибка на тесте (MSE): 0.026251
-
-🔍 Примеры прогнозов (реальные оценки):
-Факт: 91.0 | Прогноз: 67.2
-Факт: 53.0 | Прогноз: 61.9
-Факт: 80.0 | Прогноз: 70.6
-Факт: 74.0 | Прогноз: 59.9
-Факт: 84.0 | Прогноз: 76.5
-</p>
-</body>
-</html>
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
