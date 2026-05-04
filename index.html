@@ -56,6 +56,23 @@
             --transition-slow: 500ms ease;
         }
 
+        /* 🌙 Dark Mode */
+        [data-theme="dark"] {
+            --bg-primary: #1a1817;
+            --bg-secondary: #252220;
+            --bg-tertiary: #2d2a28;
+            --surface: #201e1d;
+            --surface-hover: #282523;
+            --text-primary: #e8e1dc;
+            --text-secondary: #b8afa7;
+            --text-muted: #8a827a;
+            --border-color: #3d3835;
+            --code-bg: #1e1c1b;
+            --code-border: #3d3835;
+            --border-glow: 0 0 20px rgba(139, 124, 201, 0.3);
+            --shadow-glow: 0 0 40px rgba(139, 124, 201, 0.25);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
 
@@ -69,6 +86,7 @@
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background var(--transition-normal), color var(--transition-normal);
         }
 
         /* Soft animated background */
@@ -100,6 +118,30 @@
             margin: 0 auto;
             position: relative;
             z-index: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-fast);
+            font-size: 1.2rem;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg), var(--border-glow);
         }
 
         /* Header */
@@ -152,6 +194,12 @@
             margin-bottom: 12px;
             letter-spacing: -0.02em;
             animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        [data-theme="dark"] h1 {
+            background: linear-gradient(135deg, #e8e1dc 0%, #b8afa7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
@@ -240,6 +288,10 @@
             font-size: 0.8rem; color: var(--text-muted);
         }
 
+        [data-theme="dark"] .code-header {
+            background: linear-gradient(180deg, #2d2a28 0%, #1e1c1b 100%);
+        }
+
         .dots { display: flex; gap: 7px; }
         .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(61, 56, 53, 0.15); }
         .dot.red { background: #fca5a5; }
@@ -305,6 +357,11 @@
             border-radius: 14px; padding: 24px;
             font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
             animation: slideIn 0.4s ease;
+        }
+
+        [data-theme="dark"] #output-area {
+            background: linear-gradient(180deg, rgba(37, 34, 32, 0.95), rgba(32, 30, 29, 0.98));
+            border-color: var(--accent-info);
         }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -380,6 +437,10 @@
             background: linear-gradient(135deg, rgba(187, 247, 208, 0.15), rgba(255, 255, 255, 0.98));
         }
 
+        [data-theme="dark"] .card.report-card {
+            background: linear-gradient(135deg, rgba(93, 164, 138, 0.15), rgba(32, 30, 29, 0.98));
+        }
+
         .report-card .icon-box {
             background: linear-gradient(135deg, rgba(187, 247, 208, 0.4), rgba(167, 243, 208, 0.4));
             border-color: rgba(93, 164, 138, 0.5);
@@ -408,7 +469,9 @@
         .metric-card {
             background: var(--surface-hover); border-radius: 12px; padding: 16px;
             border: 1px solid var(--border-color); text-align: center;
+            transition: transform var(--transition-fast);
         }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
         .metric-value {
             font-size: 1.8rem; font-weight: 700; color: var(--text-primary);
@@ -447,7 +510,9 @@
             font-size: 0.7rem; font-weight: 600; color: var(--text-primary);
             box-shadow: 0 3px 10px rgba(196, 181, 253, 0.4);
             border: 1px solid rgba(139, 124, 201, 0.3);
+            transition: transform var(--transition-fast);
         }
+        .nn-neuron:hover { transform: scale(1.05); }
 
         .nn-neuron.input {
             background: linear-gradient(135deg, #bfdbfe, #93c5fd);
@@ -471,7 +536,9 @@
         .compare-card {
             background: var(--surface-hover); border-radius: 12px; padding: 16px;
             border: 1px solid var(--border-color);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         }
+        .compare-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 
         .compare-card.highlight {
             background: linear-gradient(135deg, rgba(233, 213, 255, 0.3), rgba(216, 180, 254, 0.2));
@@ -495,6 +562,64 @@
             border-top: 1px solid var(--border-color);
         }
 
+        /* Files Section - Fixed & Styled */
+        .files-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--surface-hover);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .files-section h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .file-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+        .file-link:hover {
+            transform: translateY(-2px);
+            border-color: #c4b5fd;
+            box-shadow: var(--shadow-md), var(--border-glow);
+        }
+        .file-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #c4b5fd;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
@@ -504,10 +629,21 @@
             .nn-layer { gap: 12px; }
             .nn-neuron { width: 60px; height: 28px; font-size: 0.65rem; }
             .nn-neuron.output { width: 95px; height: 40px; }
+            .theme-toggle { top: 12px; right: 12px; }
+        }
+
+        /* Print Styles */
+        @media print {
+            .theme-toggle, .btn { display: none; }
+            body { background: #fff; color: #000; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
         }
     </style>
 </head>
 <body>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">🌙</button>
 
 <div class="container">
     <header>
@@ -868,38 +1004,113 @@ print(<span class="str">f"✅ MSE на тесте: {mse_test:.4f}"</span>)  <spa
         </div>
     </div>
 
+    <!-- Fixed Files Section -->
+    <div class="files-section">
+        <h3>📎 Прикреплённые файлы</h3>
+        <div class="files-grid">
+            <a href="Электронные таблицы.xlsx" class="file-link">
+                <span class="file-icon">📊</span>
+                <span>Электронные таблицы.xlsx</span>
+            </a>
+            <a href="Степени целых чисел.xlsx" class="file-link">
+                <span class="file-icon">🔢</span>
+                <span>Степени целых чисел.xlsx</span>
+            </a>
+            <a href="3 таблица.ods" class="file-link">
+                <span class="file-icon">📋</span>
+                <span>3 таблица.ods</span>
+            </a>
+            <a href="4 таблица.ods" class="file-link">
+                <span class="file-icon">📋</span>
+                <span>4 таблица.ods</span>
+            </a>
+        </div>
+    </div>
+
     <footer>
         <p>🌸 Сгенерировано для презентации проекта • 2026 • Задание выполнено: 21.03.2026</p>
     </footer>
 </div>
 
 <script>
+    // Theme Toggle
+    function toggleTheme() {
+        const html = document.documentElement;
+        const btn = document.querySelector('.theme-toggle');
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        
+        if (isDark) {
+            html.removeAttribute('data-theme');
+            btn.textContent = '🌙';
+            localStorage.removeItem('theme');
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            btn.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.querySelector('.theme-toggle').textContent = '☀️';
+    }
+
+    // Confetti Effect
+    function createConfetti() {
+        const colors = ['#c4b5fd', '#bbf7d0', '#fde68a', '#bfdbfe', '#fecaca', '#e9d5ff'];
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                confetti.style.width = (5 + Math.random() * 10) + 'px';
+                confetti.style.height = confetti.style.width;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }, i * 30);
+        }
+    }
+
     function runSimulation() {
         const output = document.getElementById('output-area');
         const btn = document.querySelector('.btn');
         
         output.style.display = 'none';
         btn.innerHTML = '<span>⏳ Загрузка...</span>';
-        btn.style.opacity = '0.7';
+        btn.disabled = true;
         
         setTimeout(() => {
             output.style.display = 'block';
             btn.innerHTML = '<span>▶ Запустить снова</span>';
-            btn.style.opacity = '1';
+            btn.disabled = false;
             
+            // Animate bars
             document.querySelectorAll('.bar-fill').forEach(bar => {
                 const width = bar.style.width;
                 bar.style.width = '0';
                 setTimeout(() => bar.style.width = width, 100);
             });
             
+            // Confetti celebration!
+            createConfetti();
+            
             output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 600);
     }
+
+    // Add hover effect to neurons
+    document.querySelectorAll('.nn-neuron').forEach(neuron => {
+        neuron.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+        neuron.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
 </script>
-<a href="Электронные таблицы.xlsx"
-    <a href="Степени целых чисел.xlsx"
-    <a href="3 таблица.ods" 
-    <a href="4 таблица.ods" 
 </body>
 </html>
